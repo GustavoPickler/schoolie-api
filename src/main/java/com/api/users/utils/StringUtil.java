@@ -5,6 +5,10 @@ import java.util.Map;
 
 public class StringUtil {
 
+    private StringUtil() {
+        throw new AssertionError("This class should not be instantiated.");
+    }
+
     public static String normalizeText(String text) {
         return text.toLowerCase();
     }

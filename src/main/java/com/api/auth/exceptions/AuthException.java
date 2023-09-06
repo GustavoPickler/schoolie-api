@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AuthException extends RuntimeException {
 
-    private final String code;
-    private final Error error;
+    private final transient String code;
+    private final transient Error error;
 
     public AuthException(String pCode, String pMessage) {
         super(pMessage);

@@ -16,7 +16,7 @@ import lombok.Getter;
 public class NotFoundException extends Exception {
 
     private final Class<?> clazz;
-    private final Object identifier;
+    private final transient Object identifier;
     private final int code;
 
     public NotFoundException(Class<?> pClazz, Object pIdentifier, int code) {

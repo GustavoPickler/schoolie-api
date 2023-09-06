@@ -1,6 +1,5 @@
 package com.api.users.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,12 +14,11 @@ public class UserDTO {
     private String password;
     private String email;
     private String phone;
-    private String type;
+    private String document;
 
-    public UserDTO(Long id, String email, String type) {
+    public UserDTO(Long id, String email) {
         this.id = id;
         this.email = email;
-        this.type = type;
     }
 
 }

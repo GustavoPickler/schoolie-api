@@ -1,6 +1,5 @@
 package com.api.auth.service;
 
-import com.api.auth.exceptions.AuthException;
 import com.api.users.exception.BadRequestException;
 import com.api.users.exception.NotFoundException;
 import com.api.users.model.User;
