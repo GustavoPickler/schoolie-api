@@ -15,7 +15,4 @@ public class MessageUtils {
     public static final String PASSWORD_CHANGED_SUCCESS_MESSAGE = "Password updated successfully";
     public static final String USERS_FOUND_SUCCESS_MESSAGE = "Users found successfully";
     public static final String CREATED_CLASS_SUCCESS_MESSAGE = "Class created successfully";
-    public static final String ADDED_USER_SUCCESS_MESSAGE = "User added successfully";
-    public static final String REMOVED_USER_SUCCESS_MESSAGE = "User removed successfully";
-    public static final String REMOVED_CLASS_SUCCESS_MESSAGE = "Class removed successfully";
 }

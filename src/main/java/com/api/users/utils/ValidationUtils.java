@@ -15,13 +15,13 @@ public class ValidationUtils {
         String normalizedEmail = StringUtil.normalizeText(user.getEmail());
 
         if (repository.existsByEmail(normalizedEmail)) {
-            return new UserFieldValidationResult(true, "Email already registered", 900);
+            return new UserFieldValidationResult(true, ErrorCode.EMAIL_ALREADY_REGISTERED);
         }
 
         if (repository.existsByPhone(user.getPhone())) {
-            return new UserFieldValidationResult(true, "Phone already registered", 901);
+            return new UserFieldValidationResult(true, ErrorCode.PHONE_ALREADY_REGISTERED);
         }
 
-        return new UserFieldValidationResult(false, null, 0);
+        return new UserFieldValidationResult(false, null);
     }
 }

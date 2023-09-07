@@ -27,13 +27,10 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService service;
+    private final AuthService service;
+    private final JwtGenerator jwtGenerator;
 
-    @Autowired
-    private JwtGenerator jwtGenerator;
-
-    @PostMapping("/login")
+    @PostMapping
     public LoginResponseDTO authenticateUser(@Valid @RequestBody LoginRequestDTO authRequest) throws NotFoundException {
         String email = authRequest.getEmail();
         String password = authRequest.getPassword();

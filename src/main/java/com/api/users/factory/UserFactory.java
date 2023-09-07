@@ -5,6 +5,7 @@ import com.api.users.exception.BadRequestException;
 import com.api.users.model.*;
 import com.api.users.repository.UserRepository;
 import com.api.users.security.PasswordEncryptionService;
+import com.api.users.utils.ErrorCode;
 import com.api.users.utils.UserFieldValidationResult;
 import com.api.users.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class UserFactory {
                 Student student = new Student();
                 return createUser(userDTO, student);
             }
-            default -> throw new BadRequestException("Invalid user type", 900);
+            default -> throw new BadRequestException(ErrorCode.INVALID_USER_TYPE);
         }
     }
 
@@ -46,9 +47,8 @@ public class UserFactory {
 
         UserFieldValidationResult validationResult = ValidationUtils.userExists(user, userRepository);
 
-        if (validationResult.isExists()) {
-            throw new BadRequestException(validationResult.getMessage(), validationResult.getErrorCode());
-        }
+        if (validationResult.isExists())
+            throw new BadRequestException(validationResult.getErrorCode());
 
         String encryptedPassword = passwordEncryptionService.encryptPassword(user.getPassword());
         user.setPassword(encryptedPassword);

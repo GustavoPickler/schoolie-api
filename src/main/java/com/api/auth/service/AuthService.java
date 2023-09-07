@@ -4,10 +4,10 @@ import com.api.users.exception.BadRequestException;
 import com.api.users.exception.NotFoundException;
 import com.api.users.model.User;
 import com.api.users.repository.UserRepository;
+import com.api.users.utils.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,22 +19,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
     private final UserRepository userRepository;
-
-    @Autowired
     private final BCryptPasswordEncoder passwordEncoder;
 
     public boolean authenticate(String email, String password) throws NotFoundException, BadRequestException {
         Optional<User> user = userRepository.findByEmail(email);
 
-        if (user.isEmpty()) {
-            throw new NotFoundException(User.class, email, 702);
-        }
+        if (user.isEmpty())
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
 
-        if (!passwordEncoder.matches(password, user.get().getPassword())) {
-            throw new BadRequestException("Invalid password", 701);
-        }
+        if (!passwordEncoder.matches(password, user.get().getPassword()))
+            throw new BadRequestException(ErrorCode.INVALID_PASSWORD);
 
         return true;
     }

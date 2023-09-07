@@ -7,12 +7,10 @@ import lombok.Setter;
 @Setter
 public class UserFieldValidationResult {
     private boolean exists;
-    private String message;
-    private int errorCode;
+    private ErrorCode errorCode;
 
-    public UserFieldValidationResult(boolean exists, String message, int errorCode) {
+    public UserFieldValidationResult(boolean exists, ErrorCode errorCode) {
         this.exists = exists;
-        this.message = message;
         this.errorCode = errorCode;
     }
 
