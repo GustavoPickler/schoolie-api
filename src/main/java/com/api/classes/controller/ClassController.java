@@ -17,18 +17,9 @@ public class ClassController {
 
     private final ClassService classService;
 
-    @PostMapping
-    public ResponseEntity<ClassEntity> createClass(@RequestBody ClassDTO classDTO) {
-        return ResponseEntity.ok(classService.createClass(classDTO));
-    }
-
     @GetMapping
     public ResponseEntity<ClassEntity> getClass(@RequestParam Long classId) throws NotFoundException {
         return ResponseEntity.ok(classService.getClass(classId));
     }
 
-    @DeleteMapping
-    public ResponseEntity<ClassEntity> removeClass(@RequestParam Long classId) throws NotFoundException {
-        return ResponseEntity.ok(classService.deleteClass(classId));
-    }
 }

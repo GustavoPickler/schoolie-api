@@ -1,8 +1,10 @@
 package com.api.users.service;
 
 import com.api.classes.model.ClassEntity;
-import com.api.classes.repository.ClassUserRepository;
-import com.api.classes.service.ClassUserService;
+import com.api.classes.repository.StudentClassRepository;
+import com.api.classes.repository.TeacherClassRepository;
+import com.api.classes.service.StudentClassService;
+import com.api.classes.service.TeacherClassService;
 import com.api.users.factory.UserFactory;
 import com.api.users.dto.UserDTO;
 import com.api.users.dto.request.ChangePasswordRequest;
@@ -12,6 +14,7 @@ import com.api.users.model.*;
 import com.api.users.repository.UserRepository;
 import com.api.users.security.PasswordEncryptionService;
 import com.api.users.utils.ErrorCode;
+import com.api.users.utils.StringUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,9 +35,11 @@ public class UserService {
 
     private final PasswordEncryptionService passwordEncryptionService;
     private final UserRepository userRepository;
+    private final StudentClassRepository studentClassRepository;
+    private final TeacherClassRepository teacherClassRepository;
     private final UserFactory userFactory;
-    private final ClassUserService classUserService;
-    private final ClassUserRepository classUserRepository;
+    private final StudentClassService studentClassService;
+    private final TeacherClassService teacherClassService;
 
     // Retrieve a user by their ID
     public User getUser(Long userId) throws NotFoundException {
@@ -51,8 +56,27 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 
-    public User createUser(UserDTO userDTO, UserType type) throws BadRequestException {
-        return userFactory.createUser(userDTO, type);
+    public User createUser(UserDTO userDTO, UserType userType) throws BadRequestException {
+        User user = userFactory.createUser(userDTO, userType);
+        user.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
+        user.setPhone(userDTO.getPhone());
+        user.setPassword(userDTO.getPassword());
+
+        String normalizedEmail = StringUtil.normalizeText(user.getEmail());
+
+        if (userRepository.existsByEmail(normalizedEmail)) {
+            throw new BadRequestException(ErrorCode.EMAIL_ALREADY_REGISTERED);
+        }
+
+        if (userRepository.existsByPhone(user.getPhone())) {
+            throw new BadRequestException(ErrorCode.PHONE_ALREADY_REGISTERED);
+        }
+
+        String encryptedPassword = passwordEncryptionService.encryptPassword(user.getPassword());
+        user.setPassword(encryptedPassword);
+
+        return userRepository.save(user);
     }
 
     // Retrieve user, update fields, and save changes to the repository
@@ -94,13 +118,18 @@ public class UserService {
     // Retrieve user by email, and delete from the repository
     public void deleteUser(Long userId) throws NotFoundException {
         User userToDelete = getUser(userId);
-        List<ClassEntity> classUserList = classUserRepository.findByUserId(userId);
+        UserType userType = UserType.valueOf(userToDelete.getUserType());
 
-        for (ClassEntity classUser : classUserList) {
-            classUserService.deleteUserFromClass(classUser.getId(), userId);
+        switch (userType) {
+            case STUDENT:
+                List<ClassEntity> studentClassList = studentClassRepository.findByStudentId(userId);
+                studentClassList.forEach(student -> studentClassService.removeStudentFromAllClasses(student.getId()));
+            case TEACHER:
+                List<ClassEntity> teacherClassList = teacherClassRepository.findByTeacherId(userId);
+                teacherClassList.forEach(teacher -> teacherClassService.removeTeacherFromAllClasses(teacher.getId()));
+            default:
+                userRepository.delete(userToDelete);
         }
-
-        userRepository.delete(userToDelete);
     }
 
 }

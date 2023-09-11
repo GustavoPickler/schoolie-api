@@ -6,6 +6,8 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,6 @@ public class User {
     @Column(nullable = false)
     private String phone;
 
-    @Column(name = "dtype", insertable = false, updatable = false)
-    private String dtype;
+    @Column(name = "user_type", insertable = false, updatable = false)
+    private String userType;
 }

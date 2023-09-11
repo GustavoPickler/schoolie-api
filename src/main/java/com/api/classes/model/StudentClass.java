@@ -1,13 +1,13 @@
 package com.api.classes.model;
 
-import com.api.users.model.User;
+import com.api.users.model.Student;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "class_users")
-public class ClassUser {
+@Table(name = "students_classes")
+public class StudentClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class ClassUser {
     private ClassEntity pClass;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "student_id")
+    private Student student;
 
 }

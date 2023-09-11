@@ -6,8 +6,6 @@ import com.api.users.model.*;
 import com.api.users.repository.UserRepository;
 import com.api.users.security.PasswordEncryptionService;
 import com.api.users.utils.ErrorCode;
-import com.api.users.utils.UserFieldValidationResult;
-import com.api.users.utils.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,36 +22,18 @@ public class UserFactory {
             case TEACHER -> {
                 Teacher teacher = new Teacher();
                 teacher.setDocument(userDTO.getDocument());
-                return createUser(userDTO, teacher);
+                return teacher;
             }
             case RESPONSIBLE -> {
                 Responsible responsible = new Responsible();
                 responsible.setDocument(userDTO.getDocument());
-                return createUser(userDTO, responsible);
+                return responsible;
             }
             case STUDENT -> {
-                Student student = new Student();
-                return createUser(userDTO, student);
+                return new Student();
             }
             default -> throw new BadRequestException(ErrorCode.INVALID_USER_TYPE);
         }
-    }
-
-    private User createUser(UserDTO userDTO, User user) throws BadRequestException {
-        user.setEmail(userDTO.getEmail());
-        user.setUsername(userDTO.getUsername());
-        user.setPhone(userDTO.getPhone());
-        user.setPassword(userDTO.getPassword());
-
-        UserFieldValidationResult validationResult = ValidationUtils.userExists(user, userRepository);
-
-        if (validationResult.isExists())
-            throw new BadRequestException(validationResult.getErrorCode());
-
-        String encryptedPassword = passwordEncryptionService.encryptPassword(user.getPassword());
-        user.setPassword(encryptedPassword);
-
-        return userRepository.save(user);
     }
 }
 

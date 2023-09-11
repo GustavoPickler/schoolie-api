@@ -28,14 +28,14 @@ public class UserController {
     private final UserService service;
 
     // Retrieve user, map to DTO, and build user response
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
     }
 
     // Retrieve all users, map to DTOs, and return response
-    @GetMapping
-    public ResponseEntity<User> getUserById(@RequestParam Long userId) throws NotFoundException {
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long userId) throws NotFoundException {
         return ResponseEntity.ok(service.getUser(userId));
     }
 
@@ -45,8 +45,8 @@ public class UserController {
         return ResponseEntity.ok(service.getUserByEmail(email));
     }
 
-    private ResponseEntity<User> createUser(UserDTO userDTO, UserType type) throws BadRequestException {
-        return ResponseEntity.ok(service.createUser(userDTO, type));
+    private ResponseEntity<User> createUser(UserDTO userDTO, UserType userType) throws BadRequestException {
+        return ResponseEntity.ok(service.createUser(userDTO, userType));
     }
 
     // Create teacher, build response map, and return response

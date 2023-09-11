@@ -1,4 +1,4 @@
-package com.api.users.exception;
+package com.api.classes.exception;
 
 import com.api.users.utils.ErrorCode;
 import lombok.Getter;
@@ -11,12 +11,12 @@ import lombok.Getter;
  * @author gustavo.pickler
  *
  */
-public class NotFoundException extends Exception {
+public class UserTypeException extends Exception {
 
     @Getter
     private final int code;
 
-    public NotFoundException(ErrorCode errorCode) {
+    public UserTypeException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.code = errorCode.getCode();
     }

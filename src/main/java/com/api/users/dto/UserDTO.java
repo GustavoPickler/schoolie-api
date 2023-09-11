@@ -1,5 +1,6 @@
 package com.api.users.dto;
 
+import com.api.users.model.UserType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
