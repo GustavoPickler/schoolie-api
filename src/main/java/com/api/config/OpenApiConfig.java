@@ -24,7 +24,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
     @Bean
     public GroupedOpenApi apiClasses() {
         return GroupedOpenApi.builder()
-                .group("classes")
+                .group("db/changelog/tables/classes")
                 .packagesToScan("com.api.classes.controller")
                 .build();
     }

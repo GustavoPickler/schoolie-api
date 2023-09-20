@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/tables/users/create_users_001.yaml
+  - include:
+      file: db/changelog/tables/classes/create_classes_001.yaml
+  - include:
+      file: db/changelog/tables/students_classes/create_students_classes_001.yaml
+  - include:
+      file: db/changelog/tables/teachers_classes/create_teachers_classes_001.yaml
+  - include:
+      file: db/changelog/tables/posts/create_posts_001.yaml

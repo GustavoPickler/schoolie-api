@@ -1,7 +1,7 @@
 package com.api.posts.model;
 
 import com.api.classes.model.ClassEntity;
-import com.api.users.model.User;
+import com.api.users.model.Teacher;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,8 +19,8 @@ public class Post {
     private ClassEntity pClass;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User author;
+    @JoinColumn(name = "teacher_id")
+    private Teacher author;
 
     @Column(nullable = false)
     private String title;
@@ -28,7 +28,6 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Lob
     @Column
     private String attachment;
 
