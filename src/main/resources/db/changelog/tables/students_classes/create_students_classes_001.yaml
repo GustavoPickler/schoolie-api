@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_students_classes_001
+      author: gustavo_pickler
+      changes:
+        - createTable:
+            tableName: students_classes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: class_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: student_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseTableName: students_classes
+                  baseColumnNames: class_id
+                  referencedTableName: classes
+                  referencedColumnNames: id
+                  onDelete: CASCADE
+              - foreignKeyConstraint:
+                  baseTableName: students_classes
+                  baseColumnNames: student_id
+                  referencedTableName: users
+                  referencedColumnNames: id
+                  onDelete: CASCADE
