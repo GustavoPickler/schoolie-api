@@ -127,6 +127,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>schoolie-image</finalName>
 	</build>
 
 </project>
