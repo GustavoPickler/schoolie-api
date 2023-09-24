@@ -16,9 +16,4 @@ public class UserDTO {
     private String phone;
     private String document;
 
-    public UserDTO(Long id, String email) {
-        this.id = id;
-        this.email = email;
-    }
-
 }

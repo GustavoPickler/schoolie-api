@@ -9,4 +9,5 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Responsible extends User {
     private String document;
+    private Student student;
 }

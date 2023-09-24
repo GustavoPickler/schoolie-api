@@ -23,7 +23,8 @@ public enum ErrorCode {
     USER_NOT_A_TEACHER(918, "User is not a teacher"),
     USER_NOT_A_STUDENT(919, "User is not a student"),
     TEACHER_TO_REMOVE_NOT_FOUND_IN_CLASS(920, "Teacher to remove not found in this class"),
-    POST_NOT_FOUND(921, "Post not found");
+    POST_NOT_FOUND(921, "Post not found"),
+    COMMENT_NOT_FOUND(922, "Comment not found");
 
     private final int code;
     private final String message;

@@ -89,11 +89,16 @@ public class UserController {
             }
     )
     @GetMapping("/userByEmail")
-    public ResponseEntity<User> getUserByEmail(
+    public ResponseEntity<UserDTO> getUserByEmail(
             @Parameter(description = "Email do usuário a ser recuperado", required = true)
             @RequestParam String email
     ) throws NotFoundException {
-        return ResponseEntity.ok(service.getUserByEmail(email));
+        User user = service.getUserByEmail(email);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setUsername(user.getUsername());
+        return ResponseEntity.ok(userDTO);
     }
 
     private ResponseEntity<User> createUser(UserDTO userDTO, UserType userType) throws BadRequestException {
