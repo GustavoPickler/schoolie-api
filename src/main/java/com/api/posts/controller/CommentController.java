@@ -1,8 +1,14 @@
 package com.api.posts.controller;
 
+import com.api.classes.repository.StudentClassRepository;
+import com.api.classes.repository.TeacherClassRepository;
 import com.api.posts.model.Comment;
+import com.api.posts.model.Post;
 import com.api.posts.service.CommentService;
+import com.api.posts.service.PostService;
 import com.api.users.exception.NotFoundException;
+import com.api.users.model.Student;
+import com.api.users.model.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,8 +24,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/comments")
 @Tag(name = "Comments", description = "Endpoints relacionados a comentários")
 public class CommentController {
-    private final CommentService commentService;
 
+    private final CommentService commentService;
+    private final PostService postService;
     /**
      * Get a comment by its ID.
      *
@@ -46,22 +53,35 @@ public class CommentController {
     }
 
     /**
-     * Create a new comment.
+     * Create a new comment for a specific post.
      *
+     * @param postId  The ID of the post to which the comment belongs.
      * @param comment The comment to create.
      * @return The created comment.
+     * @throws NotFoundException If the post is not found.
      */
     @Operation(
             summary = "Criar Comentário",
-            description = "Cria um novo comentário.",
+            description = "Cria um novo comentário para um post específico.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Comentário criado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Post não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @PostMapping
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
-        Comment createdComment = commentService.createComment(comment);
+    @PostMapping()
+    public ResponseEntity<Comment> createCommentForPost(
+            @Parameter(description = "ID do post ao qual o comentário pertence", required = true)
+            @RequestParam Long postId,
+            @RequestParam Long userId,
+            @RequestBody Comment comment
+    ) throws NotFoundException {
+        Post post = postService.getPostById(postId);
+
+        comment.setPost(post);
+
+        Comment createdComment = commentService.createComment(comment, post, userId);
+
         return ResponseEntity.ok(createdComment);
     }
 

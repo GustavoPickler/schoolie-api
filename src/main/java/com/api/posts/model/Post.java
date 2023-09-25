@@ -4,12 +4,15 @@ import com.api.classes.model.ClassEntity;
 import com.api.users.model.Teacher;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "posts")
 public class Post {
 
@@ -33,8 +36,5 @@ public class Post {
 
     @Column
     private String attachment;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
 
 }

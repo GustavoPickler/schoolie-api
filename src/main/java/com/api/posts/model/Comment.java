@@ -4,10 +4,15 @@ import com.api.users.model.Teacher;
 import com.api.users.model.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "comments")
+@NoArgsConstructor
 public class Comment {
 
     @Id
@@ -15,15 +20,19 @@ public class Comment {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "post_id") // Link each comment to a post
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id") // Link each comment to a teacher
+    @JoinColumn(name = "user_id")
     private User author;
 
     @Column(nullable = false)
     private String content;
 
-    // Add any other necessary fields
+    public Comment(Post post, User author, String content) {
+        this.post = post;
+        this.author = author;
+        this.content = content;
+    }
 }

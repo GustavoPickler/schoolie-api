@@ -69,4 +69,8 @@ public class StudentClassService {
     public void removeStudentFromAllClasses(Long studentId) {
         studentClassRepository.deleteByStudentId(studentId);
     }
+
+    public int countStudentsByClassId(Long classId) {
+        return studentClassRepository.countStudentsByClassId(classId);
+    }
 }

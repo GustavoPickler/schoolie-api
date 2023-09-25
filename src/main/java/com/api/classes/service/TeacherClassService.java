@@ -127,4 +127,8 @@ public class TeacherClassService {
         return userTypeString.equalsIgnoreCase(UserType.STUDENT.name());
     }
 
+    public String getTeacherNameByClassId(Long classId) {
+        return teacherClassRepository.findTeacherByClassId(classId);
+    }
+
 }

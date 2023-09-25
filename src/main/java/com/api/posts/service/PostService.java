@@ -4,6 +4,7 @@ import com.api.classes.model.ClassEntity;
 import com.api.classes.repository.ClassRepository;
 import com.api.classes.repository.StudentClassRepository;
 import com.api.classes.repository.TeacherClassRepository;
+import com.api.posts.model.Comment;
 import com.api.posts.model.Post;
 import com.api.posts.repository.PostRepository;
 import com.api.users.exception.BadRequestException;
