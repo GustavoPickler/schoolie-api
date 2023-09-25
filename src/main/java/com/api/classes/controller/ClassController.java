@@ -1,26 +1,24 @@
 package com.api.classes.controller;
 
-import com.api.classes.dto.ClassDTO;
 import com.api.classes.dto.ClassInfoDTO;
+import com.api.classes.model.ClassEntity;
+import com.api.classes.service.ClassService;
 import com.api.classes.service.StudentClassService;
 import com.api.classes.service.TeacherClassService;
+import com.api.users.exception.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.api.classes.model.ClassEntity;
-import com.api.classes.service.ClassService;
-import com.api.users.exception.NotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controlador para operações relacionadas a classes.
@@ -83,20 +81,7 @@ public class ClassController {
             Pageable pageable,
             @Parameter(description = "ID do usuário", required = true)
             @RequestParam Long userId
-    ) {
-        Page<ClassInfoDTO> classesPage = classService.getUserClasses(userId, pageable)
-                .map(classEntity -> {
-                    String teacherName = teacherClassService.getTeacherNameByClassId(classEntity.getId());
-                    int totalStudents = studentClassService.countStudentsByClassId(classEntity.getId());
-                    return new ClassInfoDTO(
-                            classEntity.getId(),
-                            classEntity.getName(),
-                            classEntity.getDescription(),
-                            teacherName,
-                            totalStudents
-                    );
-                });
-
-        return ResponseEntity.ok(classesPage);
+    ) throws NotFoundException {
+        return ResponseEntity.ok(classService.getUserClasses(userId, pageable));
     }
 }
