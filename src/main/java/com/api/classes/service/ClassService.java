@@ -47,7 +47,7 @@ public class ClassService {
             default -> throw new NotFoundException(ErrorCode.INVALID_USER_TYPE);
         };
 
-        Map<Long, Long> mapClassIdByStudentCount = null; //faz um metodo pra retornar um Map<Long,Long> que a chave é o id da classe e o value é o count de numero de alunos
+        Map<Long, Long> mapClassIdByStudents = null; //faz um metodo pra retornar um Map<Long, List<Student>> que a chave é o id da classe e o value é a lista de alunos em sala
 
         //map to classinfodto utilizar o map pra popular o countStudents e usar o content do page classentity pra popular valores da class no dto
         return null;
