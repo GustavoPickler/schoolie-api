@@ -88,6 +88,32 @@ public class ClassController {
     }
 
     /**
+     * Exclui uma classe por um professor.
+     * @param teacherId O ID do professor.
+     * @param classId   O ID da classe a ser excluída.
+     * @return A classe excluída.
+     * @throws NotFoundException Se a classe ou o professor não forem encontrados.
+     */
+    @Operation(
+            summary = "Excluir Classe",
+            description = "Exclui uma classe por um professor.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Classe excluída com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Classe ou professor não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            }
+    )
+    @DeleteMapping("/{teacherId}")
+    public ResponseEntity<ClassEntity> removeClass(
+            @Parameter(description = "ID do professor", required = true)
+            @PathVariable Long teacherId,
+            @Parameter(description = "ID da classe a ser excluída", required = true)
+            @RequestParam Long classId
+    ) throws NotFoundException {
+        return ResponseEntity.ok(classService.deleteClass(teacherId, classId));
+    }
+
+    /**
      * Lista todas as classes do usuário paginado.
      *
      * @param pageable   Configurações de paginação.
@@ -108,9 +134,9 @@ public class ClassController {
             Pageable pageable,
             @Parameter(description = "ID do usuário", required = true)
             @RequestParam Long userId,
-            @Parameter(description = "Nome da Classe", required = true)
-            @RequestParam String searchValue
-            ) throws NotFoundException {
+            @Parameter(description = "Nome da Classe")
+            @RequestParam(required = false) String searchValue
+    ) throws NotFoundException {
         return ResponseEntity.ok(classService.getUserClasses(userId, searchValue, pageable));
     }
 }

@@ -113,23 +113,6 @@ public class TeacherClassService {
         studentClassRepository.deleteByClassAndUser(classId, studentId);
     }
 
-    public ClassEntity deleteClass(Long teacherId, Long classId) throws NotFoundException {
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
-
-        User owner = userRepository.findById(teacherId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
-
-        if (!userIsOwner(owner, classEntity))
-            throw new BadRequestException(ErrorCode.USER_NOT_THE_CLASS_OWNER);
-
-        ClassEntity pClass = classService.getClass(classId);
-        teacherClassRepository.deleteByClass(classId);
-        studentClassRepository.deleteByClass(classId);
-        classRepository.delete(pClass);
-        return pClass;
-    }
-
     public void removeTeacherFromAllClasses(Long teacherId) {
         teacherClassRepository.deleteByTeacherId(teacherId);
     }

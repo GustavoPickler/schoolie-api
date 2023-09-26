@@ -139,30 +139,4 @@ public class TeacherClassController {
         teacherClassService.removeStudentFromClass(teacherId, classId, userId);
         return ResponseEntity.ok().build();
     }
-
-    /**
-     * Exclui uma classe por um professor.
-     * @param teacherId O ID do professor.
-     * @param classId   O ID da classe a ser excluída.
-     * @return A classe excluída.
-     * @throws NotFoundException Se a classe ou o professor não forem encontrados.
-     */
-    @Operation(
-            summary = "Excluir Classe",
-            description = "Exclui uma classe por um professor.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Classe excluída com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Classe ou professor não encontrado"),
-                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-            }
-    )
-    @DeleteMapping("/{teacherId}/deleteClass")
-    public ResponseEntity<ClassEntity> removeClass(
-            @Parameter(description = "ID do professor", required = true)
-            @PathVariable Long teacherId,
-            @Parameter(description = "ID da classe a ser excluída", required = true)
-            @RequestParam Long classId
-    ) throws NotFoundException {
-        return ResponseEntity.ok(teacherClassService.deleteClass(teacherId, classId));
-    }
 }
