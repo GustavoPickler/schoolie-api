@@ -3,6 +3,8 @@ package com.api.users.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
+
 @Entity
 @Data
 @Table(name = "users")
@@ -27,4 +29,7 @@ public class User {
 
     @Column(name = "user_type", insertable = false, updatable = false)
     private String userType;
+
+    @Column(name = "birth_date")
+    private Date birthDate;
 }

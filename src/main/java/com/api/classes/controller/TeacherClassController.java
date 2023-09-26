@@ -33,31 +33,6 @@ public class TeacherClassController {
     private final TeacherClassService teacherClassService;
 
     /**
-     * Cria uma nova classe por um professor.
-     * @param teacherId O ID do professor.
-     * @param classDTO  As informações da classe a ser criada.
-     * @return A classe criada.
-     * @throws NotFoundException Se o professor não for encontrado.
-     */
-    @Operation(
-            summary = "Criar Classe",
-            description = "Cria uma nova classe por um professor.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Classe criada com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
-                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-            }
-    )
-    @PostMapping("/{teacherId}")
-    public ResponseEntity<ClassEntity> createClass(
-            @Parameter(description = "ID do professor", required = true)
-            @PathVariable Long teacherId,
-            @RequestBody ClassDTO classDTO
-    ) throws NotFoundException {
-        return ResponseEntity.ok(teacherClassService.createClass(classDTO, teacherId));
-    }
-
-    /**
      * Adiciona um estudante a uma classe por um professor.
      * @param classId   O ID da classe.
      * @param studentId O ID do estudante.
@@ -86,6 +61,29 @@ public class TeacherClassController {
             @PathVariable Long teacherId
     ) throws NotFoundException, UserTypeException {
         teacherClassService.addStudentInClass(classId, studentId, teacherId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "Adicionar Professor em Classe",
+            description = "Adiciona um professor a uma classe por um administrador.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Professor adicionado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+                    @ApiResponse(responseCode = "404", description = "Classe, professor ou administrador não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            }
+    )
+    @PutMapping
+    public ResponseEntity<Void> addTeacherToClass(
+            @Parameter(description = "ID da classe", required = true)
+            @RequestParam Long classId,
+            @Parameter(description = "ID do professor", required = true)
+            @RequestParam Long teacherId,
+            @Parameter(description = "ID do administrador", required = true)
+            @RequestParam Long ownerId
+    ) throws NotFoundException, UserTypeException {
+        teacherClassService.addTeacherToClass(classId, teacherId, ownerId);
         return ResponseEntity.ok().build();
     }
 

@@ -1,5 +1,6 @@
 package com.api.classes.controller;
 
+import com.api.classes.dto.ClassDTO;
 import com.api.classes.dto.ClassInfoDTO;
 import com.api.classes.model.ClassEntity;
 import com.api.classes.service.ClassService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controlador para operações relacionadas a classes.
@@ -35,6 +37,31 @@ public class ClassController {
     private final ClassService classService;
     private final TeacherClassService teacherClassService;
     private final StudentClassService studentClassService;
+
+    /**
+     * Cria uma nova classe por um professor.
+     * @param teacherId O ID do professor.
+     * @param classDTO  As informações da classe a ser criada.
+     * @return A classe criada.
+     * @throws NotFoundException Se o professor não for encontrado.
+     */
+    @Operation(
+            summary = "Criar Classe",
+            description = "Cria uma nova classe por um professor.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Classe criada com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            }
+    )
+    @PostMapping("/{teacherId}")
+    public ResponseEntity<ClassEntity> createClass(
+            @Parameter(description = "ID do professor", required = true)
+            @PathVariable Long teacherId,
+            @RequestBody ClassDTO classDTO
+    ) throws NotFoundException {
+        return ResponseEntity.ok(classService.createClass(classDTO, teacherId));
+    }
 
     /**
      * Recupera informações sobre uma classe com base no ID da classe.
@@ -80,8 +107,10 @@ public class ClassController {
             @Parameter(description = "Configurações de paginação", required = true)
             Pageable pageable,
             @Parameter(description = "ID do usuário", required = true)
-            @RequestParam Long userId
-    ) throws NotFoundException {
-        return ResponseEntity.ok(classService.getUserClasses(userId, pageable));
+            @RequestParam Long userId,
+            @Parameter(description = "Nome da Classe", required = true)
+            @RequestParam String searchValue
+            ) throws NotFoundException {
+        return ResponseEntity.ok(classService.getUserClasses(userId, searchValue, pageable));
     }
 }

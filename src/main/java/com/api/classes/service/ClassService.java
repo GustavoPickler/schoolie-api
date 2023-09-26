@@ -3,9 +3,12 @@ package com.api.classes.service;
 import com.api.classes.dto.ClassDTO;
 import com.api.classes.dto.ClassInfoDTO;
 import com.api.classes.model.ClassEntity;
+import com.api.classes.model.TeacherClass;
 import com.api.classes.repository.ClassRepository;
 import com.api.classes.repository.StudentClassRepository;
+import com.api.classes.repository.TeacherClassRepository;
 import com.api.users.exception.NotFoundException;
+import com.api.users.model.Teacher;
 import com.api.users.model.User;
 import com.api.users.repository.UserRepository;
 import com.api.users.utils.ErrorCode;
@@ -19,8 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Slf4j
@@ -31,32 +36,84 @@ public class ClassService {
     private final ClassRepository classRepository;
     private final UserRepository userRepository;
     private final StudentClassRepository classUserRepository;
+    private final TeacherClassRepository teacherClassRepository;
+
+    public ClassEntity createClass(ClassDTO classDTO, Long teacherId) throws NotFoundException {
+        Teacher teacher = (Teacher) userRepository.findById(teacherId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
+        ClassEntity classEntity = new ClassEntity();
+        classEntity.setDescription(classDTO.getDescription());
+        classEntity.setName(classDTO.getName());
+        classEntity.setOwnerId(teacher.getId());
+        classEntity.setRegisterDate(new Date());
+        classEntity.setLastUpdate(new Date());
+
+        if(classDTO.getPassword() != null)
+            classEntity.setPassword(classDTO.getPassword());
+
+        classRepository.save(classEntity);
+
+        return classEntity;
+    }
 
     public ClassEntity getClass(Long classId) throws NotFoundException {
         return classRepository.findById(classId).orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
     }
 
-    public Page<ClassInfoDTO> getUserClasses(Long userId, Pageable pageable) throws NotFoundException {
+    public Page<ClassInfoDTO> getUserClasses(Long userId, String searchValue, Pageable pageable) throws NotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        Page<ClassEntity> classesPage = switch (user.getUserType()) {
-            case "Teacher" -> getClassesByTeacherPage(pageable, userId);
-            case "Responsible" -> null; //TODO: implementar consultas pageable responsible
-            case "Student" -> null; //TODO: implementar consultas pageable student
+        Page<ClassInfoDTO> classesPage = switch (user.getUserType()) {
+            case "Teacher" -> getClassesByTeacherPage(pageable, searchValue, userId);
+            case "Responsible" -> getClassesByResponsiblePage(pageable, userId);
+            case "Student" -> getClassesByStudentPage(pageable, userId);
             default -> throw new NotFoundException(ErrorCode.INVALID_USER_TYPE);
         };
 
-        Map<Long, Long> mapClassIdByStudents = null; //faz um metodo pra retornar um Map<Long, List<Student>> que a chave é o id da classe e o value é a lista de alunos em sala
+        List<Long> classIds = classesPage.getContent().stream()
+                .map(ClassInfoDTO::getId)
+                .toList();
 
-        //map to classinfodto utilizar o map pra popular o countStudents e usar o content do page classentity pra popular valores da class no dto
-        return null;
+        Map<Long, Long> getClassIdAndStudentsAmount = classRepository.countStudentsByClassId(classIds);
+
+        List<ClassInfoDTO> classInfoDTOs = classesPage.getContent().stream()
+                .map(classInfo -> {
+                    ClassInfoDTO classInfoDTO = new ClassInfoDTO();
+                    classInfoDTO.setId(classInfo.getId());
+                    classInfoDTO.setName(classInfo.getName());
+                    classInfoDTO.setDescription(classInfo.getDescription());
+                    classInfoDTO.setTeacherName(classInfo.getTeacherName());
+                    Long studentsCount = getClassIdAndStudentsAmount.computeIfAbsent(classInfo.getId(), id -> 0L);
+                    classInfoDTO.setStudentsCount(studentsCount);
+                    return classInfoDTO;
+                })
+                .toList();
+
+        return new PageImpl<>(classInfoDTOs, pageable, classesPage.getTotalElements());
     }
 
-    private Page<ClassEntity> getClassesByTeacherPage(Pageable pageable, Long userId) {
-        List<ClassEntity> classes = classRepository.findByTeacherId(userId);
-        Long count = classRepository.countByTeacherId(userId);
+    private Page<ClassInfoDTO> getClassesByTeacherPage(Pageable pageable, String searchValue, Long userId) {
+        List<ClassInfoDTO> classes = classRepository.findByTeacherId(userId, searchValue, pageable);
+        Long count = classRepository.countClassesByTeacherId(userId);
         return new PageImpl<>(classes, pageable, count);
+    }
+
+    private Page<ClassInfoDTO> getClassesByResponsiblePage(Pageable pageable, Long userId) {
+        List<ClassInfoDTO> classes = classRepository.findByResponsibleId(userId);
+        Long count = classRepository.countByResponsibleId(userId);
+        return new PageImpl<>(classes, pageable, count);
+    }
+
+    private Page<ClassInfoDTO> getClassesByStudentPage(Pageable pageable, Long userId) {
+        List<ClassInfoDTO> classes = classRepository.findByStudentId(userId);
+        Long count = classRepository.countByStudentId(userId);
+        return new PageImpl<>(classes, pageable, count);
+    }
+
+    public void setLastUpdate(ClassEntity classEntity) {
+        classEntity.setLastUpdate(new Date());
+        classRepository.save(classEntity);
     }
 
 }

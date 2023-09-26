@@ -25,7 +25,10 @@ public enum ErrorCode {
     TEACHER_TO_REMOVE_NOT_FOUND_IN_CLASS(920, "Teacher to remove not found in this class"),
     POST_NOT_FOUND(921, "Post not found"),
     COMMENT_NOT_FOUND(922, "Comment not found"),
-    USER_NOT_FOUND_IN_CLASS(923, "User not found in class");
+    USER_NOT_FOUND_IN_CLASS(923, "User not found in class"),
+    OWNER_NOT_FOUND(924, "Owner not found"),
+    USER_NOT_THE_CLASS_OWNER(925, "User not the class owner"),
+    TEACHER_ALREADY_IN_CLASS(917, "Teacher already in class");
 
     private final int code;
     private final String message;

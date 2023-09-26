@@ -62,6 +62,7 @@ public class UserService {
         user.setUsername(userDTO.getUsername());
         user.setPhone(userDTO.getPhone());
         user.setPassword(userDTO.getPassword());
+        user.setBirthDate(userDTO.getBirthDate());
 
         String normalizedEmail = StringUtil.normalizeText(user.getEmail());
 

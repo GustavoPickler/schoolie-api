@@ -27,3 +27,24 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: last_update
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: register_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - foreignKeyConstraint:
+                  baseTableName: classes
+                  baseColumnNames: teacher_id
+                  referencedTableName: users
+                  referencedColumnNames: id
+                  onDelete: CASCADE
