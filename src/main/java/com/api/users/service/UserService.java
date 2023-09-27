@@ -99,12 +99,11 @@ public class UserService {
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword()))
             throw new BadRequestException(ErrorCode.NEW_PASSWORD_DOES_NOT_MATCH);
 
-        if (changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword()))
+        if (changePasswordRequest.getNewPassword().equals(changePasswordRequest.getOldPassword()))
             throw new BadRequestException(ErrorCode.NEW_PASSWORD_SAME_AS_OLD);
 
         String encryptedPassword = passwordEncryptionService.encryptPassword(changePasswordRequest.getNewPassword());
         userToUpdate.setPassword(encryptedPassword);
-
         userRepository.save(userToUpdate);
     }
 

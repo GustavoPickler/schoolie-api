@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface StudentClassRepository extends JpaRepository<StudentClass, Long> {
+public interface StudentClassRepository extends JpaRepository<StudentClass, Long>  {
 
     @Query("SELECT sc.pClass FROM StudentClass sc WHERE sc.student.id = :studentId")
     List<ClassEntity> findByStudentId(@Param("studentId") Long studentId);
@@ -32,8 +32,5 @@ public interface StudentClassRepository extends JpaRepository<StudentClass, Long
 
     @Query("SELECT CASE WHEN COUNT(sc) > 0 THEN true ELSE false END FROM StudentClass sc WHERE sc.pClass.id = :classId AND sc.student.id = :studentId")
     boolean existsByClassIdAndUserStudent(@Param("classId") Long classId, @Param("studentId") Long studentId);
-
-    @Query("SELECT COUNT(sc) FROM StudentClass sc WHERE sc.pClass.id = :classId")
-    int countStudentsByClassId(@Param("classId") Long classId);
 
 }

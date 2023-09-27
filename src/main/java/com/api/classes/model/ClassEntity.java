@@ -25,9 +25,9 @@ public class ClassEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @OneToOne
     @JoinColumn(name = "owner_id")
-    private Long ownerId;
+    private Teacher owner;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "register_date")

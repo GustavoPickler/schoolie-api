@@ -11,3 +11,6 @@ databaseChangeLog:
       file: db/changelog/tables/posts/create_posts_001.yaml
   - include:
       file: db/changelog/tables/comments/create_comments_001.yaml
+  - include:
+      file: db/changelog/tables/students_responsibles/create_students_responsibles_001.yaml
+

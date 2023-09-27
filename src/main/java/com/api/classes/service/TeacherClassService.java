@@ -128,7 +128,7 @@ public class TeacherClassService {
     }
 
     private boolean userIsOwner(User owner, ClassEntity classEntity) {
-        return Objects.equals(classEntity.getOwnerId(), owner.getId());
+        return Objects.equals(classEntity.getOwner().getId(), owner.getId());
     }
 
 }

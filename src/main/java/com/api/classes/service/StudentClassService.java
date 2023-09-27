@@ -55,7 +55,7 @@ public class StudentClassService {
     }
 
     public void removeStudentFromClass(Long classId, Long studentId) throws NotFoundException {
-        ClassEntity classEntity = classRepository.findById(classId)
+        classRepository.findById(classId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
         userRepository.findById(studentId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STUDENT_NOT_FOUND));
@@ -68,9 +68,5 @@ public class StudentClassService {
 
     public void removeStudentFromAllClasses(Long studentId) {
         studentClassRepository.deleteByStudentId(studentId);
-    }
-
-    public int countStudentsByClassId(Long classId) {
-        return studentClassRepository.countStudentsByClassId(classId);
     }
 }

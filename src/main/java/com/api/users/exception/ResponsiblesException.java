@@ -12,11 +12,11 @@ import lombok.Getter;
  *
  */
 @Getter
-public class NotFoundException extends Exception {
+public class ResponsiblesException extends Exception {
 
     private final int code;
 
-    public NotFoundException(ErrorCode errorCode) {
+    public ResponsiblesException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.code = errorCode.getCode();
     }

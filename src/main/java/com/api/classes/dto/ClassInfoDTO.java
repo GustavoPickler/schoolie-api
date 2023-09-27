@@ -11,13 +11,13 @@ public class ClassInfoDTO {
     private String name;
     private String description;
     private String teacherName;
-    private Long studentsCount;
+    private Long totalStudents;
 
-    public ClassInfoDTO(Long id, String name, String description, String teacherName, Long studentsCount) {
+    public ClassInfoDTO(Long id, String name, String description, String teacherName, Long totalStudents) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.teacherName = teacherName;
-        this.studentsCount = studentsCount;
+        this.totalStudents = totalStudents;
     }
 }
