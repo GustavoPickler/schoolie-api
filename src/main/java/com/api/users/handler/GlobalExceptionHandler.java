@@ -2,7 +2,6 @@ package com.api.users.handler;
 
 import com.api.users.exception.BadRequestException;
 import com.api.users.exception.NotFoundException;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,16 +30,5 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @Getter
-    private static class ErrorResponse {
-        private final String error;
-        private final String message;
-        private final int code;
-
-        public ErrorResponse(String error, String message, int code) {
-            this.error = error;
-            this.message = message;
-            this.code = code;
-        }
-    }
+    private record ErrorResponse(String error, String message, int code) {}
 }

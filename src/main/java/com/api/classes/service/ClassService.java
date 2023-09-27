@@ -3,7 +3,6 @@ package com.api.classes.service;
 import com.api.classes.dto.ClassDTO;
 import com.api.classes.dto.ClassInfoDTO;
 import com.api.classes.model.ClassEntity;
-import com.api.classes.model.TeacherClass;
 import com.api.classes.repository.ClassRepository;
 import com.api.classes.repository.StudentClassRepository;
 import com.api.classes.repository.TeacherClassRepository;
@@ -15,13 +14,11 @@ import com.api.users.model.User;
 import com.api.users.repository.StudentResponsibleRepository;
 import com.api.users.repository.UserRepository;
 import com.api.users.utils.ErrorCode;
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -68,10 +65,9 @@ public class ClassService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         Page<ClassEntity> classesPage = switch (user.getUserType()) {
-            case "Teacher" -> getClassesByTeacherPage(pageable, userId, searchValue);
-            case "Student" -> getClassesByStudentPage(pageable, userId, searchValue);
-            case "Responsible" -> getClassesByResponsiblePage(pageable, userId, searchValue);
-            default -> throw new NotFoundException(ErrorCode.INVALID_USER_TYPE);
+            case TEACHER -> getClassesByTeacherPage(pageable, userId, searchValue);
+            case STUDENT -> getClassesByStudentPage(pageable, userId, searchValue);
+            case RESPONSIBLE -> getClassesByResponsiblePage(pageable, userId, searchValue);
         };
 
         List<Long> classIds = classesPage.getContent().stream()

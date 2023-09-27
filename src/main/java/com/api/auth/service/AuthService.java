@@ -1,37 +1,39 @@
 package com.api.auth.service;
 
-import com.api.users.exception.BadRequestException;
+import com.api.auth.dto.request.LoginRequestDTO;
 import com.api.users.exception.NotFoundException;
-import com.api.users.model.User;
-import com.api.users.repository.UserRepository;
 import com.api.users.utils.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Getter
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService  {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final UserDetailsCustomService userDetailsCustomService;
 
-    public boolean authenticate(String email, String password) throws NotFoundException, BadRequestException {
-        Optional<User> user = userRepository.findByEmail(email);
+    private final AuthenticationManager authenticationManager;
 
-        if (user.isEmpty())
+    private final JwtService jwtService;
+
+    public String authenticate(LoginRequestDTO dto) throws NotFoundException {
+        final String email = dto.getEmail();
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, dto.getPassword()));
+
+        final UserDetails userDetails = userDetailsCustomService.loadUserByUsername(email);
+
+        if (userDetails == null) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
 
-        if (!passwordEncoder.matches(password, user.get().getPassword()))
-            throw new BadRequestException(ErrorCode.INVALID_PASSWORD);
-
-        return true;
+        return jwtService.generateToken(email);
     }
-
 }
