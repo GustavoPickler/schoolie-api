@@ -63,6 +63,7 @@ public class UserService {
         user.setPhone(userDTO.getPhone());
         user.setPassword(userDTO.getPassword());
         user.setBirthDate(userDTO.getBirthDate());
+        user.setUserType(userType);
 
         String normalizedEmail = StringUtil.normalizeText(user.getEmail());
 
@@ -118,17 +119,18 @@ public class UserService {
     // Retrieve user by email, and delete from the repository
     public void deleteUser(Long userId) throws NotFoundException {
         User userToDelete = getUser(userId);
-        UserType userType = UserType.valueOf(userToDelete.getUserType());
+        UserType userType = userToDelete.getUserType();
 
         switch (userType) {
-            case STUDENT:
+            case STUDENT -> {
                 List<ClassEntity> studentClassList = studentClassRepository.findByStudentId(userId);
                 studentClassList.forEach(student -> studentClassService.removeStudentFromAllClasses(student.getId()));
-            case TEACHER:
+            }
+            case TEACHER -> {
                 List<ClassEntity> teacherClassList = teacherClassRepository.findByTeacherId(userId);
                 teacherClassList.forEach(teacher -> teacherClassService.removeTeacherFromAllClasses(teacher.getId()));
-            default:
-                userRepository.delete(userToDelete);
+            }
+            default -> userRepository.delete(userToDelete);
         }
     }
 
