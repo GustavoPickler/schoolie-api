@@ -14,7 +14,7 @@ import java.time.ZoneOffset;
 public class JwtService {
 
     public static final String API_AUTH = "api-auth";
-    
+
     @Value("${api.security.jwt.secret}")
     private String secret;
 
