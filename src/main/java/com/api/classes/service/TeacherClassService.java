@@ -1,6 +1,5 @@
 package com.api.classes.service;
 
-import com.api.classes.dto.ClassDTO;
 import com.api.classes.exception.UserTypeException;
 import com.api.classes.model.ClassEntity;
 import com.api.classes.model.StudentClass;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -118,13 +116,11 @@ public class TeacherClassService {
     }
 
     public boolean userIsTeacher(User user) {
-        String userTypeString = user.getUserType();
-        return userTypeString.equalsIgnoreCase(UserType.TEACHER.name());
+        return UserType.TEACHER.equals(user.getUserType());
     }
 
     public boolean userIsStudent(User user) {
-        String userTypeString = user.getUserType();
-        return userTypeString.equalsIgnoreCase(UserType.STUDENT.name());
+        return UserType.STUDENT.equals(user.getUserType());
     }
 
     private boolean userIsOwner(User owner, ClassEntity classEntity) {
