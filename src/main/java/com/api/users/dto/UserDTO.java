@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +17,6 @@ public class UserDTO {
     private String email;
     private String phone;
     private String document;
-    private Date birthDate;
+    private LocalDate birthDate;
 
 }
