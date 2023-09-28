@@ -1,9 +1,7 @@
 package com.api.posts.model;
 
-import com.api.users.model.Teacher;
 import com.api.users.model.User;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

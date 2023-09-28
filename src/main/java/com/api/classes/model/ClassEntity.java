@@ -1,7 +1,6 @@
 package com.api.classes.model;
 
 import com.api.users.model.Teacher;
-import com.api.users.model.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,6 +24,9 @@ public class ClassEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String code;
+
     @OneToOne
     @JoinColumn(name = "owner_id")
     private Teacher owner;
@@ -40,6 +42,7 @@ public class ClassEntity {
     @PrePersist
     protected void onCreate() {
         registerDate = new Date();
+        lastUpdate = new Date();
     }
 
     @PreUpdate

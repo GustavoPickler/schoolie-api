@@ -2,8 +2,6 @@ package com.api.classes.repository;
 
 import com.api.classes.model.ClassEntity;
 import com.api.classes.model.TeacherClass;
-import com.api.users.model.Teacher;
-import com.api.users.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

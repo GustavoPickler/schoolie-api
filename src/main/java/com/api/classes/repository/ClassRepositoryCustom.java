@@ -16,4 +16,6 @@ public interface ClassRepositoryCustom {
     List<ClassEntity> findByStudentId(Long studentId, String searchValue, Pageable pageable);
 
     Long countClassesByStudentId(Long studentId);
+
+    boolean existsByCode(String codeId);
 }

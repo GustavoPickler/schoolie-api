@@ -1,7 +1,7 @@
 package com.api.users.exception;
 
-import lombok.Getter;
 import com.api.users.utils.ErrorCode;
+import lombok.Getter;
 
 public class BadRequestException extends RuntimeException {
 
