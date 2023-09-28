@@ -1,6 +1,5 @@
 package com.api.users.repository;
 
-import com.api.classes.model.ClassEntity;
 import com.api.users.model.Responsible;
 import com.api.users.model.Student;
 import com.api.users.model.StudentResponsible;

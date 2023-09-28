@@ -3,7 +3,6 @@ package com.api.classes.repository.impl;
 import com.api.classes.model.ClassEntity;
 import com.api.classes.repository.ClassRepositoryCustom;
 import com.api.users.model.Teacher;
-import com.api.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -160,6 +159,16 @@ public class ClassRepositoryImpl implements ClassRepositoryCustom {
         });
 
         return count.get();
+    }
+
+    @Override
+    public boolean existsByCode(String codeId) {
+        final String EXISTS_BY_ID = "SELECT COUNT(*) > 0 FROM classes WHERE code = :code";
+
+        final MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("code", codeId, Types.VARCHAR);
+
+        return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(EXISTS_BY_ID, params, Boolean.class));
     }
 
 }

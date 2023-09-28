@@ -1,6 +1,5 @@
 package com.api.users.controller;
 
-import com.api.classes.model.ClassEntity;
 import com.api.classes.repository.StudentClassRepository;
 import com.api.users.exception.NotFoundException;
 import com.api.users.exception.ResponsiblesException;
@@ -16,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controlador para operações relacionadas a classes de estudantes.

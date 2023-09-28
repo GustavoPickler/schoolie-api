@@ -1,6 +1,5 @@
 package com.api.users.service;
 
-import com.api.classes.model.ClassEntity;
 import com.api.classes.repository.StudentClassRepository;
 import com.api.users.exception.NotFoundException;
 import com.api.users.exception.ResponsiblesException;

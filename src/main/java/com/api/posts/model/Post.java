@@ -3,12 +3,8 @@ package com.api.posts.model;
 import com.api.classes.model.ClassEntity;
 import com.api.users.model.Teacher;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter

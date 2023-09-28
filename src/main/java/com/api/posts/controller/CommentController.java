@@ -1,14 +1,10 @@
 package com.api.posts.controller;
 
-import com.api.classes.repository.StudentClassRepository;
-import com.api.classes.repository.TeacherClassRepository;
 import com.api.posts.model.Comment;
 import com.api.posts.model.Post;
 import com.api.posts.service.CommentService;
 import com.api.posts.service.PostService;
 import com.api.users.exception.NotFoundException;
-import com.api.users.model.Student;
-import com.api.users.model.Teacher;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

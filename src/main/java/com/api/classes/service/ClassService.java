@@ -37,6 +37,7 @@ public class ClassService {
     private final TeacherClassRepository teacherClassRepository;
     private final StudentClassRepository studentClassRepository;
     private final StudentResponsibleRepository studentResponsibleRepository;
+    private final CodeGeneratorService codeGeneratorService;
 
     public ClassEntity createClass(ClassDTO classDTO, Long teacherId) throws NotFoundException {
         Teacher teacher = (Teacher) userRepository.findById(teacherId)
@@ -45,8 +46,7 @@ public class ClassService {
         classEntity.setDescription(classDTO.getDescription());
         classEntity.setName(classDTO.getName());
         classEntity.setOwner(teacher);
-        classEntity.setRegisterDate(new Date());
-        classEntity.setLastUpdate(new Date());
+        classEntity.setCode(codeGeneratorService.generateUniqueCode());
 
         if(classDTO.getPassword() != null)
             classEntity.setPassword(classDTO.getPassword());
