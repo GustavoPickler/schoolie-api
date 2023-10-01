@@ -1,7 +1,9 @@
 package com.api.auth.service;
 
 import com.api.auth.dto.request.LoginRequestDTO;
+import com.api.auth.utils.SecurityUtil;
 import com.api.users.exception.NotFoundException;
+import com.api.users.model.User;
 import com.api.users.utils.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +37,9 @@ public class AuthService  {
         }
 
         return jwtService.generateToken(email);
+    }
+
+    public User getUser() {
+        return SecurityUtil.getCurrentUser();
     }
 }

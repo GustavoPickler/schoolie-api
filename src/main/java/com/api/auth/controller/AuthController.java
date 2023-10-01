@@ -4,15 +4,14 @@ import com.api.auth.dto.request.LoginRequestDTO;
 import com.api.auth.dto.response.LoginResponseDTO;
 import com.api.auth.service.AuthService;
 import com.api.users.exception.NotFoundException;
+import com.api.users.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -46,5 +45,10 @@ public class AuthController {
     public LoginResponseDTO authenticateUser(@Valid @RequestBody LoginRequestDTO authRequest) throws NotFoundException {
         final String token = service.authenticate(authRequest);
         return new LoginResponseDTO(token);
+    }
+
+    @GetMapping
+    public ResponseEntity<User> getUser() {
+        return ResponseEntity.ok(service.getUser());
     }
 }
