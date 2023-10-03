@@ -32,7 +32,6 @@ public class StudentClassController {
 
     /**
      * Recupera as classes em que um estudante está inscrito.
-     * @param studentId O ID do estudante.
      * @return Uma lista das classes em que o estudante está inscrito.
      * @throws NotFoundException Se o estudante não for encontrado.
      */
@@ -47,16 +46,13 @@ public class StudentClassController {
     )
     @GetMapping
     public ResponseEntity<List<ClassEntity>> getClasses(
-            @Parameter(description = "ID do estudante", required = true)
-            @RequestParam Long studentId
     ) throws NotFoundException {
-        return ResponseEntity.ok(studentClassService.getStudentClasses(studentId));
+        return ResponseEntity.ok(studentClassService.getStudentClasses());
     }
 
     /**
      * Inscreve um estudante em uma classe com base na senha fornecida.
      * @param classId        O ID da classe.
-     * @param studentId      O ID do estudante.
      * @param passwordResponse As informações de senha para ingressar na classe.
      * @return Uma resposta vazia em caso de sucesso.
      * @throws NotFoundException Se a classe ou o estudante não forem encontrados.
@@ -75,11 +71,9 @@ public class StudentClassController {
     public ResponseEntity<Void> enterClass(
             @Parameter(description = "ID da classe", required = true)
             @RequestParam Long classId,
-            @Parameter(description = "ID do estudante", required = true)
-            @RequestParam Long studentId,
             @RequestBody PasswordResponse passwordResponse
     ) throws NotFoundException {
-        studentClassService.enterClass(classId, studentId, passwordResponse.getPassword());
+        studentClassService.enterClass(classId, passwordResponse.getPassword());
         return ResponseEntity.ok().build();
     }
 
@@ -101,12 +95,10 @@ public class StudentClassController {
     )
     @DeleteMapping("/{studentId}")
     public ResponseEntity<StudentClass> leaveClass(
-            @Parameter(description = "ID do estudante", required = true)
-            @PathVariable Long studentId,
             @Parameter(description = "ID da classe", required = true)
             @RequestParam Long classId
     ) throws NotFoundException {
-        studentClassService.removeStudentFromClass(classId, studentId);
+        studentClassService.removeStudentFromClass(classId);
         return ResponseEntity.ok().build();
     }
 }

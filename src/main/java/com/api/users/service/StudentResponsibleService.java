@@ -1,11 +1,13 @@
 package com.api.users.service;
 
+import com.api.auth.utils.SecurityUtil;
 import com.api.classes.repository.StudentClassRepository;
 import com.api.users.exception.NotFoundException;
 import com.api.users.exception.ResponsiblesException;
 import com.api.users.model.Responsible;
 import com.api.users.model.Student;
 import com.api.users.model.StudentResponsible;
+import com.api.users.model.User;
 import com.api.users.repository.StudentResponsibleRepository;
 import com.api.users.repository.UserRepository;
 import com.api.users.utils.ErrorCode;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.security.Security;
 import java.util.List;
 
 @Getter
@@ -25,12 +28,14 @@ public class StudentResponsibleService {
     private final UserRepository userRepository;
     private final StudentResponsibleRepository studentResponsibleRepository;
     private final StudentClassRepository studentClassRepository;
-    public List<Responsible> getStudentBonds(Long studentId) {
-        return studentResponsibleRepository.findResponsiblesByStudentId(studentId);
+    public List<Responsible> getStudentBonds() {
+        User student = SecurityUtil.getCurrentUser();
+        return studentResponsibleRepository.findResponsiblesByStudentId(student.getId());
     }
 
-    public List<Student> getResponsibleBonds(Long userId) {
-        return studentResponsibleRepository.findStudentsByResponsibleId(userId);
+    public List<Student> getResponsibleBonds() {
+        User student = SecurityUtil.getCurrentUser();
+        return studentResponsibleRepository.findStudentsByResponsibleId(student.getId());
     }
 
     public void linkResponsibleToStudent(Long studentId, Long responsibleId) throws NotFoundException, ResponsiblesException {
@@ -48,7 +53,5 @@ public class StudentResponsibleService {
         studentResponsible.setStudent(student);
         studentResponsibleRepository.save(studentResponsible);
     }
-
-
 
 }

@@ -34,7 +34,6 @@ public class TeacherClassController {
      * Adiciona um estudante a uma classe por um professor.
      * @param classId   O ID da classe.
      * @param studentId O ID do estudante.
-     * @param teacherId O ID do professor.
      * @return Uma resposta vazia em caso de sucesso.
      * @throws NotFoundException  Se a classe, o estudante ou o professor não forem encontrados.
      * @throws UserTypeException Se o usuário não for um estudante.
@@ -49,16 +48,14 @@ public class TeacherClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @PutMapping("/{teacherId}")
+    @PutMapping()
     public ResponseEntity<Void> addStudentIntoClass(
             @Parameter(description = "ID da classe", required = true)
             @RequestParam Long classId,
             @Parameter(description = "ID do estudante", required = true)
-            @RequestParam Long studentId,
-            @Parameter(description = "ID do professor", required = true)
-            @PathVariable Long teacherId
+            @RequestParam Long studentId
     ) throws NotFoundException, UserTypeException {
-        teacherClassService.addStudentInClass(classId, studentId, teacherId);
+        teacherClassService.addStudentInClass(classId, studentId);
         return ResponseEntity.ok().build();
     }
 
@@ -77,17 +74,14 @@ public class TeacherClassController {
             @Parameter(description = "ID da classe", required = true)
             @RequestParam Long classId,
             @Parameter(description = "ID do professor", required = true)
-            @RequestParam Long teacherId,
-            @Parameter(description = "ID do administrador", required = true)
-            @RequestParam Long ownerId
+            @RequestParam Long teacherId
     ) throws NotFoundException, UserTypeException {
-        teacherClassService.addTeacherToClass(classId, teacherId, ownerId);
+        teacherClassService.addTeacherToClass(classId, teacherId);
         return ResponseEntity.ok().build();
     }
 
     /**
      * Obtém as classes de um professor.
-     * @param teacherId O ID do professor.
      * @return Uma lista das classes do professor.
      * @throws NotFoundException Se o professor não for encontrado.
      */
@@ -102,15 +96,12 @@ public class TeacherClassController {
     )
     @GetMapping
     public ResponseEntity<List<ClassEntity>> getTeacherClasses(
-            @Parameter(description = "ID do professor", required = true)
-            @RequestParam Long teacherId
     ) throws NotFoundException {
-        return ResponseEntity.ok(teacherClassService.getTeacherClasses(teacherId));
+        return ResponseEntity.ok(teacherClassService.getTeacherClasses());
     }
 
     /**
      * Remove um estudante de uma classe por um professor.
-     * @param teacherId O ID do professor.
      * @param classId   O ID da classe.
      * @param userId    O ID do usuário (estudante) a ser removido.
      * @return Uma resposta vazia em caso de sucesso.
@@ -125,16 +116,14 @@ public class TeacherClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @DeleteMapping("/{teacherId}")
+    @DeleteMapping()
     public ResponseEntity<StudentClass> removeStudentFromClass(
-            @Parameter(description = "ID do professor", required = true)
-            @PathVariable Long teacherId,
             @Parameter(description = "ID da classe", required = true)
             @RequestParam Long classId,
             @Parameter(description = "ID do usuário (estudante) a ser removido", required = true)
             @RequestParam Long userId
     ) throws NotFoundException {
-        teacherClassService.removeStudentFromClass(teacherId, classId, userId);
+        teacherClassService.removeStudentFromClass(classId, userId);
         return ResponseEntity.ok().build();
     }
 }

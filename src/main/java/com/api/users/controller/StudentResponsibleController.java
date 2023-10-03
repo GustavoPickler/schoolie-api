@@ -30,13 +30,11 @@ import java.util.List;
 public class StudentResponsibleController {
 
     private final StudentResponsibleService studentResponsibleService;
-    private final StudentClassRepository studentClassRepository;
 
     /**
      * Recupera as classes em que um estudante está inscrito.
      * @param studentId O ID do estudante.
      * @return Uma lista das classes em que o estudante está inscrito.
-     * @throws NotFoundException Se o estudante não for encontrado.
      */
     @Operation(
             summary = "Obter responsáveis vínculados a estudante",
@@ -49,10 +47,8 @@ public class StudentResponsibleController {
     )
     @GetMapping("/student")
     public ResponseEntity<List<Responsible>> getStudentBonds(
-            @Parameter(description = "ID do estudante", required = true)
-            @RequestParam Long studentId
     ) {
-        return ResponseEntity.ok(studentResponsibleService.getStudentBonds(studentId));
+        return ResponseEntity.ok(studentResponsibleService.getStudentBonds());
     }
 
     @Operation(
@@ -66,10 +62,8 @@ public class StudentResponsibleController {
     )
     @GetMapping("/responsible")
     public ResponseEntity<List<Student>> getResponsibleBonds(
-            @Parameter(description = "ID do responsável", required = true)
-            @RequestParam Long responsibleId
     ) {
-        return ResponseEntity.ok(studentResponsibleService.getResponsibleBonds(responsibleId));
+        return ResponseEntity.ok(studentResponsibleService.getResponsibleBonds());
     }
 
     /**

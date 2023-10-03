@@ -1,5 +1,6 @@
 package com.api.posts.service;
 
+import com.api.auth.utils.SecurityUtil;
 import com.api.classes.repository.StudentClassRepository;
 import com.api.classes.repository.TeacherClassRepository;
 import com.api.posts.model.Comment;
@@ -15,6 +16,8 @@ import com.api.users.utils.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Security;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -24,16 +27,20 @@ public class CommentService {
     private final TeacherClassRepository teacherClassRepository;
     private final UserRepository userRepository;
 
-    public Comment createComment(Comment comment, Post post, Long userId) throws NotFoundException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-        validateUserInClass(user, post.getId(), userId);
+    public Comment createComment(Comment comment, Post post) {
+        User user = SecurityUtil.getCurrentUser();
+        validateUserInClass(user, post.getId(), user.getId());
         comment.setAuthor(user);
         return commentRepository.save(comment);
     }
 
     public Comment updateComment(Long commentId, Comment updatedComment) throws NotFoundException {
+        User user = SecurityUtil.getCurrentUser();
         Comment existingComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if (!existingComment.getAuthor().equals(user))
+            throw new BadRequestException(ErrorCode.USER_NOT_THE_CLASS_OWNER);
 
         existingComment.setContent(updatedComment.getContent());
 
@@ -41,8 +48,12 @@ public class CommentService {
     }
 
     public void deleteComment(Long commentId) throws NotFoundException {
+        User user = SecurityUtil.getCurrentUser();
         Comment existingComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if (!existingComment.getAuthor().equals(user))
+            throw new BadRequestException(ErrorCode.USER_NOT_THE_CLASS_OWNER);
 
         commentRepository.delete(existingComment);
     }

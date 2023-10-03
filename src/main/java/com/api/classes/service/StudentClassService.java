@@ -1,5 +1,6 @@
 package com.api.classes.service;
 
+import com.api.auth.utils.SecurityUtil;
 import com.api.classes.model.ClassEntity;
 import com.api.classes.model.StudentClass;
 import com.api.classes.repository.ClassRepository;
@@ -7,6 +8,7 @@ import com.api.classes.repository.StudentClassRepository;
 import com.api.users.exception.BadRequestException;
 import com.api.users.exception.NotFoundException;
 import com.api.users.model.Student;
+import com.api.users.model.User;
 import com.api.users.repository.UserRepository;
 import com.api.users.utils.ErrorCode;
 import lombok.Getter;
@@ -27,8 +29,9 @@ public class StudentClassService {
     private final UserRepository userRepository;
     private final StudentClassRepository studentClassRepository;
 
-    public List<ClassEntity> getStudentClasses(Long studentId) throws NotFoundException {
-        List<ClassEntity> classes = studentClassRepository.findByStudentId(studentId);
+    public List<ClassEntity> getStudentClasses() throws NotFoundException {
+        User student = SecurityUtil.getCurrentUser();
+        List<ClassEntity> classes = studentClassRepository.findByStudentId(student.getId());
 
         if (classes.isEmpty())
             throw new NotFoundException(ErrorCode.NO_CLASSES_FOUND);
@@ -36,13 +39,12 @@ public class StudentClassService {
         return classes;
     }
 
-    public void enterClass(Long classId, Long studentId, String password) throws NotFoundException {
+    public void enterClass(Long classId, String password) throws NotFoundException {
         ClassEntity pClass = classRepository.findById(classId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
-        Student student = (Student) userRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.STUDENT_NOT_FOUND));
+        User student = SecurityUtil.getCurrentUser();
 
-        if (studentClassRepository.existsByClassIdAndUserStudent(classId, studentId))
+        if (studentClassRepository.existsByClassIdAndUserStudent(classId, student.getId()))
             throw new BadRequestException(ErrorCode.USER_ALREADY_IN_CLASS);
 
         if (StringUtils.isNotBlank(pClass.getPassword()) && !pClass.getPassword().matches(password))
@@ -50,20 +52,19 @@ public class StudentClassService {
 
         StudentClass studentClass = new StudentClass();
         studentClass.setPClass(pClass);
-        studentClass.setStudent(student);
+        studentClass.setStudent((Student) student);
         studentClassRepository.save(studentClass);
     }
 
-    public void removeStudentFromClass(Long classId, Long studentId) throws NotFoundException {
+    public void removeStudentFromClass(Long classId) throws NotFoundException {
         classRepository.findById(classId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
-        userRepository.findById(studentId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.STUDENT_NOT_FOUND));
+        User student = SecurityUtil.getCurrentUser();
 
-        if (!studentClassRepository.existsByClassIdAndUserStudent(classId, studentId))
+        if (!studentClassRepository.existsByClassIdAndUserStudent(classId, student.getId()))
             throw new BadRequestException(ErrorCode.STUDENT_NOT_FOUND_IN_THIS_CLASS);
 
-        studentClassRepository.deleteByClassAndUser(classId, studentId);
+        studentClassRepository.deleteByClassAndUser(classId, student.getId());
     }
 
     public void removeStudentFromAllClasses(Long studentId) {
