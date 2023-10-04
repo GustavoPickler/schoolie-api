@@ -41,11 +41,7 @@ public class ClassService {
     private final CodeGeneratorService codeGeneratorService;
 
     public ClassEntity createClass(ClassDTO classDTO) {
-        User currentUser = SecurityUtil.getCurrentUser();
-
-        if (!(currentUser instanceof Teacher teacher)) {
-            throw new BadRequestException(ErrorCode.USER_NOT_A_TEACHER);
-        }
+        Teacher teacher = (Teacher) SecurityUtil.getCurrentUser();
 
         ClassEntity classEntity = new ClassEntity();
         classEntity.setDescription(classDTO.getDescription());
@@ -119,18 +115,18 @@ public class ClassService {
     }
 
     private Page<ClassEntity> getClassesByStudentPage(Pageable pageable, String searchValue) {
-        User student = SecurityUtil.getCurrentUser();
+        Student student = (Student) SecurityUtil.getCurrentUser();
         List<ClassEntity> classes = classRepository.findByStudentId(student.getId(), searchValue, pageable);
         Long count = classRepository.countClassesByStudentId(student.getId());
         return new PageImpl<>(classes, pageable, count);
     }
 
-    private boolean userIsOwner(User owner, ClassEntity classEntity) {
+    private boolean userIsOwner(Teacher owner, ClassEntity classEntity) {
         return Objects.equals(classEntity.getOwner().getId(), owner.getId());
     }
 
     public ClassEntity deleteClass(Long classId) throws NotFoundException {
-        User owner = SecurityUtil.getCurrentUser();
+        Teacher owner = (Teacher) SecurityUtil.getCurrentUser();
         ClassEntity classEntity = classRepository.findById(classId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
 

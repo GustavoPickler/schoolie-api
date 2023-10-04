@@ -49,9 +49,8 @@ public class ClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @PostMapping("/{teacherId}")
+    @PostMapping
     public ResponseEntity<ClassEntity> createClass(
-            @Parameter(description = "ID do professor", required = true)
             @RequestBody ClassDTO classDTO
     ) throws NotFoundException {
         return ResponseEntity.ok(classService.createClass(classDTO));
