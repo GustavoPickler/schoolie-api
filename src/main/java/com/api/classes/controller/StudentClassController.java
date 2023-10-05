@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class StudentClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping
     public ResponseEntity<List<ClassEntity>> getClasses(
     ) throws NotFoundException {
@@ -67,6 +69,7 @@ public class StudentClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("STUDENT")
     @PutMapping
     public ResponseEntity<Void> enterClass(
             @Parameter(description = "ID da classe", required = true)
@@ -79,7 +82,6 @@ public class StudentClassController {
 
     /**
      * Remove um estudante de uma classe.
-     * @param studentId O ID do estudante.
      * @param classId   O ID da classe.
      * @return Uma resposta vazia em caso de sucesso.
      * @throws NotFoundException Se a classe ou o estudante não forem encontrados.
@@ -93,7 +95,8 @@ public class StudentClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @DeleteMapping("/{studentId}")
+    @Secured("STUDENT")
+    @DeleteMapping
     public ResponseEntity<StudentClass> leaveClass(
             @Parameter(description = "ID da classe", required = true)
             @RequestParam Long classId

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -65,6 +66,7 @@ public class CommentController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT"})
     @PostMapping()
     public ResponseEntity<Comment> createCommentForPost(
             @Parameter(description = "ID do post ao qual o comentário pertence", required = true)
@@ -72,11 +74,8 @@ public class CommentController {
             @RequestBody Comment comment
     ) throws NotFoundException {
         Post post = postService.getPostById(postId);
-
         comment.setPost(post);
-
         Comment createdComment = commentService.createComment(comment, post);
-
         return ResponseEntity.ok(createdComment);
     }
 
@@ -97,6 +96,7 @@ public class CommentController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT"})
     @PutMapping("/{commentId}")
     public ResponseEntity<Comment> updateComment(
             @Parameter(description = "ID do comentário a ser atualizado", required = true)
@@ -123,6 +123,7 @@ public class CommentController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT"})
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @Parameter(description = "ID do comentário a ser excluído", required = true)

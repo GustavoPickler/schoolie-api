@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
@@ -63,6 +65,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping
     public ResponseEntity<User> getUserById(
     ) throws NotFoundException {
@@ -84,6 +87,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping("/userByEmail")
     public ResponseEntity<UserDTO> getUserByEmail(
             @Parameter(description = "Email do usuário a ser recuperado", required = true)
@@ -116,6 +120,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("TEACHER")
     @PostMapping("/teacher")
     public ResponseEntity<User> createTeacher(
             @RequestBody UserDTO userDTO
@@ -138,6 +143,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("STUDENT")
     @PostMapping("/student")
     public ResponseEntity<User> createStudent(
             @RequestBody UserDTO userDTO
@@ -160,6 +166,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("RESPONSIBLE")
     @PostMapping("/responsible")
     public ResponseEntity<User> createResponsible(
             @RequestBody UserDTO userDTO
@@ -181,6 +188,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @DeleteMapping
     public ResponseEntity<Void> deleteUser(
     ) throws NotFoundException {
@@ -203,6 +211,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @PutMapping("/resetPassword")
     public ResponseEntity<Void> resetPassword(
             @RequestBody String newPassword
@@ -228,6 +237,7 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @PutMapping
     public ResponseEntity<Void> changePassword(
             @RequestBody ChangePasswordRequest changePasswordRequest

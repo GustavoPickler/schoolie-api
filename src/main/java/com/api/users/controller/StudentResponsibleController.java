@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +34,6 @@ public class StudentResponsibleController {
 
     /**
      * Recupera as classes em que um estudante está inscrito.
-     * @param studentId O ID do estudante.
      * @return Uma lista das classes em que o estudante está inscrito.
      */
     @Operation(
@@ -45,6 +45,7 @@ public class StudentResponsibleController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping("/student")
     public ResponseEntity<List<Responsible>> getStudentBonds(
     ) {
@@ -60,6 +61,7 @@ public class StudentResponsibleController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping("/responsible")
     public ResponseEntity<List<Student>> getResponsibleBonds(
     ) {
@@ -82,6 +84,7 @@ public class StudentResponsibleController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"STUDENT", "RESPONSIBLE"})
     @PostMapping
     public ResponseEntity<Void> linkResponsibleToStudent(
             @Parameter(description = "ID do estudante", required = true)

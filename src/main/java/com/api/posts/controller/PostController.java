@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class PostController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("TEACHER")
     @PutMapping
     public ResponseEntity<Post> createPost(
             @Parameter(description = "ID da classe relacionada ao post", required = true)
@@ -62,6 +64,7 @@ public class PostController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping
     public ResponseEntity<List<Post>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
@@ -84,6 +87,7 @@ public class PostController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPost(
             @Parameter(description = "ID do post a ser recuperado", required = true)
@@ -102,6 +106,7 @@ public class PostController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("TEACHER")
     @PutMapping("/{postId}")
     public ResponseEntity<Post> updatePost(
             @Parameter(description = "ID do post a ser atualizado", required = true)
@@ -122,6 +127,7 @@ public class PostController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("TEACHER")
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @Parameter(description = "ID do post a ser deletado", required = true)
