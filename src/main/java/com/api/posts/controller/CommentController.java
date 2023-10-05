@@ -69,14 +69,13 @@ public class CommentController {
     public ResponseEntity<Comment> createCommentForPost(
             @Parameter(description = "ID do post ao qual o comentário pertence", required = true)
             @RequestParam Long postId,
-            @RequestParam Long userId,
             @RequestBody Comment comment
     ) throws NotFoundException {
         Post post = postService.getPostById(postId);
 
         comment.setPost(post);
 
-        Comment createdComment = commentService.createComment(comment, post, userId);
+        Comment createdComment = commentService.createComment(comment, post);
 
         return ResponseEntity.ok(createdComment);
     }

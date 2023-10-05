@@ -27,7 +27,6 @@ public class PostController {
      * Cria um novo post.
      *
      * @param classId O ID da classe relacionada ao post.
-     * @param userId  O ID do autor do post.
      * @param post    O corpo do post a ser criado.
      * @return O post criado.
      * @throws NotFoundException Se a classe ou o usuário não forem encontrados.
@@ -45,11 +44,9 @@ public class PostController {
     public ResponseEntity<Post> createPost(
             @Parameter(description = "ID da classe relacionada ao post", required = true)
             @RequestParam Long classId,
-            @Parameter(description = "ID do autor do post", required = true)
-            @RequestParam Long userId,
             @RequestBody Post post
     ) throws NotFoundException {
-        return ResponseEntity.ok(postService.createPost(classId, userId, post));
+        return ResponseEntity.ok(postService.createPost(classId, post));
     }
 
     /**
@@ -111,11 +108,9 @@ public class PostController {
             @PathVariable Long postId,
             @Parameter(description = "ID da classe à qual o post pertence", required = true)
             @RequestParam Long classId,
-            @Parameter(description = "ID do professor que está atualizando o post", required = true)
-            @RequestParam Long teacherId,
             @RequestBody Post updatedPost
     ) throws NotFoundException {
-        Post post = postService.updatePost(postId, updatedPost, teacherId, classId);
+        Post post = postService.updatePost(postId, updatedPost, classId);
         return ResponseEntity.ok(post);
     }
     @Operation(
@@ -132,11 +127,9 @@ public class PostController {
             @Parameter(description = "ID do post a ser deletado", required = true)
             @PathVariable Long postId,
             @Parameter(description = "ID da classe à qual o post pertence", required = true)
-            @RequestParam Long classId,
-            @Parameter(description = "ID do professor que está deletando o post", required = true)
-            @RequestParam Long teacherId
+            @RequestParam Long classId
     ) throws NotFoundException {
-        postService.deletePost(postId, teacherId, classId);
+        postService.deletePost(postId, classId);
         return ResponseEntity.noContent().build();
     }
 

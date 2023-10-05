@@ -1,5 +1,6 @@
 package com.api.posts.service;
 
+import com.api.auth.utils.SecurityUtil;
 import com.api.classes.model.ClassEntity;
 import com.api.classes.repository.ClassRepository;
 import com.api.classes.repository.StudentClassRepository;
@@ -30,16 +31,15 @@ public class PostService {
     private final ClassRepository classRepository;
     private final PostRepository postRepository;
 
-    public Post createPost(Long classId, Long teacherId, Post post) throws NotFoundException {
+    public Post createPost(Long classId, Post post) throws NotFoundException {
+        Teacher teacher = (Teacher) SecurityUtil.getCurrentUser();
         ClassEntity classEntity = classRepository.findById(classId).
                 orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
-        Teacher teacher = (Teacher) userRepository.findById(teacherId).
-                orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         post.setAuthor(teacher);
         post.setPClass(classEntity);
 
-        if(!teacherClassRepository.existsByClassIdAndTeacherId(teacherId, classId))
+        if (validateTeacherInClass(teacher, classEntity))
             throw new BadRequestException(ErrorCode.TEACHER_NOT_FOUND_IN_THIS_CLASS);
 
         return postRepository.save(post);
@@ -54,13 +54,15 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
     }
 
-    public Post updatePost(Long postId, Post updatedPost, Long teacherId, Long classId) throws NotFoundException {
+    public Post updatePost(Long postId, Post updatedPost, Long classId) throws NotFoundException {
+        Teacher teacher = (Teacher) SecurityUtil.getCurrentUser();
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        ClassEntity classEntity = classRepository.findById(classId).
+                orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
 
-        if (!teacherClassRepository.existsByClassIdAndTeacherId(classId, teacherId)) {
+        if (validateTeacherInClass(teacher, classEntity))
             throw new BadRequestException(ErrorCode.TEACHER_NOT_FOUND_IN_THIS_CLASS);
-        }
 
         existingPost.setTitle(updatedPost.getTitle());
         existingPost.setContent(updatedPost.getContent());
@@ -68,15 +70,22 @@ public class PostService {
         return postRepository.save(existingPost);
     }
 
-    public void deletePost(Long postId, Long teacherId, Long classId) throws NotFoundException {
+    public void deletePost(Long postId, Long classId) throws NotFoundException {
+        Teacher teacher = (Teacher) SecurityUtil.getCurrentUser();
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+        ClassEntity classEntity = classRepository.findById(classId).
+                orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
 
-        if (!teacherClassRepository.existsByClassIdAndTeacherId(classId, teacherId)) {
+        if (validateTeacherInClass(teacher, classEntity))
             throw new BadRequestException(ErrorCode.TEACHER_NOT_FOUND_IN_THIS_CLASS);
-        }
 
         postRepository.delete(existingPost);
+    }
+
+    private boolean validateTeacherInClass(Teacher teacher, ClassEntity classEntity) {
+        return teacherClassRepository.existsByClassIdAndTeacherId(teacher.getId(), classEntity.getId()) &&
+                classEntity.getOwner().equals(teacher);
     }
 
 }

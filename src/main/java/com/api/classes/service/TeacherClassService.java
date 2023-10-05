@@ -1,5 +1,6 @@
 package com.api.classes.service;
 
+import com.api.auth.utils.SecurityUtil;
 import com.api.classes.exception.UserTypeException;
 import com.api.classes.model.ClassEntity;
 import com.api.classes.model.StudentClass;
@@ -35,10 +36,11 @@ public class TeacherClassService {
     private final StudentClassRepository studentClassRepository;
     private final ClassService classService;
 
-    public List<ClassEntity> getTeacherClasses(Long teacherId) throws NotFoundException {
-        userRepository.findById(teacherId)
+    public List<ClassEntity> getTeacherClasses() throws NotFoundException {
+        User teacher = SecurityUtil.getCurrentUser();
+        userRepository.findById(teacher.getId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
-        List<ClassEntity> classes = teacherClassRepository.findByTeacherId(teacherId);
+        List<ClassEntity> classes = teacherClassRepository.findByTeacherId(teacher.getId());
 
         if (classes.isEmpty())
             throw new NotFoundException(ErrorCode.NO_CLASSES_FOUND);
@@ -46,11 +48,10 @@ public class TeacherClassService {
         return classes;
     }
 
-    public void addStudentInClass(Long classId, Long studentId, Long teacherId) throws NotFoundException, UserTypeException {
+    public void addStudentInClass(Long classId, Long studentId) throws NotFoundException, UserTypeException {
         ClassEntity classEntity = classRepository.findById(classId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
-        User teacher = userRepository.findById(teacherId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
+        User teacher = SecurityUtil.getCurrentUser();
         User student = userRepository.findById(studentId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STUDENT_NOT_FOUND));
 
@@ -68,13 +69,12 @@ public class TeacherClassService {
         studentClassRepository.save(studentClass);
     }
 
-    public void addTeacherToClass(Long classId, Long teacherId, Long ownerId) throws NotFoundException, UserTypeException {
+    public void addTeacherToClass(Long classId, Long teacherId) throws NotFoundException, UserTypeException {
 
         ClassEntity classEntity = classRepository.findById(classId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
 
-        User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.OWNER_NOT_FOUND));
+        User owner = SecurityUtil.getCurrentUser();
 
         if (!userIsOwner(owner, classEntity))
             throw new BadRequestException(ErrorCode.USER_NOT_THE_CLASS_OWNER);
@@ -94,13 +94,12 @@ public class TeacherClassService {
         teacherClassRepository.save(teacherClass);
     }
 
-    public void removeStudentFromClass(Long teacherId, Long classId, Long studentId) throws NotFoundException {
+    public void removeStudentFromClass(Long classId, Long studentId) throws NotFoundException {
         ClassEntity classEntity = classRepository.findById(classId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CLASS_NOT_FOUND));
         userRepository.findById(studentId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.STUDENT_NOT_FOUND));
-        User owner = userRepository.findById(teacherId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.TEACHER_NOT_FOUND));
+        User owner = SecurityUtil.getCurrentUser();
 
         if (!userIsOwner(owner, classEntity))
             throw new BadRequestException(ErrorCode.USER_NOT_THE_CLASS_OWNER);

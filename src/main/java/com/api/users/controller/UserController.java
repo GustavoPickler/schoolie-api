@@ -44,14 +44,13 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(service.getAllUsers());
     }
 
     /**
      * Recupera um usuário pelo ID.
-     * @param userId O ID do usuário a ser recuperado.
      * @return As informações do usuário.
      * @throws NotFoundException Se o usuário não for encontrado.
      */
@@ -64,12 +63,10 @@ public class UserController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @GetMapping("/{id}")
+    @GetMapping
     public ResponseEntity<User> getUserById(
-            @Parameter(description = "ID do usuário a ser recuperado", required = true)
-            @PathVariable Long userId
     ) throws NotFoundException {
-        return ResponseEntity.ok(service.getUser(userId));
+        return ResponseEntity.ok(service.getUser());
     }
 
     /**
@@ -172,7 +169,6 @@ public class UserController {
 
     /**
      * Exclui um usuário pelo ID.
-     * @param userId O ID do usuário a ser excluído.
      * @return Uma resposta vazia em caso de sucesso.
      * @throws NotFoundException Se o usuário não for encontrado.
      */
@@ -187,16 +183,13 @@ public class UserController {
     )
     @DeleteMapping
     public ResponseEntity<Void> deleteUser(
-            @Parameter(description = "ID do usuário a ser excluído", required = true)
-            @RequestParam Long userId
     ) throws NotFoundException {
-        service.deleteUser(userId);
+        service.deleteUser();
         return ResponseEntity.ok().build();
     }
 
     /**
      * Redefine a senha de um usuário pelo ID.
-     * @param userId O ID do usuário.
      * @param newPassword A nova senha.
      * @return Uma resposta vazia em caso de sucesso.
      * @throws NotFoundException Se o usuário não for encontrado.
@@ -212,17 +205,14 @@ public class UserController {
     )
     @PutMapping("/resetPassword")
     public ResponseEntity<Void> resetPassword(
-            @Parameter(description = "ID do usuário", required = true)
-            @RequestParam Long userId,
             @RequestBody String newPassword
     ) throws NotFoundException {
-        service.resetPassword(userId, newPassword);
+        service.resetPassword(newPassword);
         return ResponseEntity.ok().build();
     }
 
     /**
      * Altera a senha de um usuário pelo ID.
-     * @param userId O ID do usuário.
      * @param changePasswordRequest As informações de alteração de senha.
      * @return Uma resposta vazia em caso de sucesso.
      * @throws NotFoundException  Se o usuário não for encontrado.
@@ -240,11 +230,9 @@ public class UserController {
     )
     @PutMapping
     public ResponseEntity<Void> changePassword(
-            @Parameter(description = "ID do usuário", required = true)
-            @PathVariable Long userId,
             @RequestBody ChangePasswordRequest changePasswordRequest
     ) throws NotFoundException, BadRequestException {
-        service.changePassword(userId, changePasswordRequest);
+        service.changePassword(changePasswordRequest);
         return ResponseEntity.ok().build();
     }
 }

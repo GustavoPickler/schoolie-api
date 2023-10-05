@@ -36,7 +36,6 @@ public class ClassController {
 
     /**
      * Cria uma nova classe por um professor.
-     * @param teacherId O ID do professor.
      * @param classDTO  As informações da classe a ser criada.
      * @return A classe criada.
      * @throws NotFoundException Se o professor não for encontrado.
@@ -50,13 +49,11 @@ public class ClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @PostMapping("/{teacherId}")
+    @PostMapping
     public ResponseEntity<ClassEntity> createClass(
-            @Parameter(description = "ID do professor", required = true)
-            @PathVariable Long teacherId,
             @RequestBody ClassDTO classDTO
     ) throws NotFoundException {
-        return ResponseEntity.ok(classService.createClass(classDTO, teacherId));
+        return ResponseEntity.ok(classService.createClass(classDTO));
     }
 
     /**
@@ -85,7 +82,6 @@ public class ClassController {
 
     /**
      * Exclui uma classe por um professor.
-     * @param teacherId O ID do professor.
      * @param classId   O ID da classe a ser excluída.
      * @return A classe excluída.
      * @throws NotFoundException Se a classe ou o professor não forem encontrados.
@@ -99,21 +95,18 @@ public class ClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
-    @DeleteMapping("/{teacherId}")
+    @DeleteMapping()
     public ResponseEntity<ClassEntity> removeClass(
-            @Parameter(description = "ID do professor", required = true)
-            @PathVariable Long teacherId,
             @Parameter(description = "ID da classe a ser excluída", required = true)
             @RequestParam Long classId
     ) throws NotFoundException {
-        return ResponseEntity.ok(classService.deleteClass(teacherId, classId));
+        return ResponseEntity.ok(classService.deleteClass(classId));
     }
 
     /**
      * Lista todas as classes do usuário paginado.
      *
      * @param pageable   Configurações de paginação.
-     * @param userId     O ID do usuário.
      * @return Uma página de classes com informações do professor e total de alunos.
      */
     @Operation(
@@ -128,11 +121,9 @@ public class ClassController {
     public ResponseEntity<Page<ClassInfoDTO>> listUserClasses(
             @Parameter(description = "Configurações de paginação", required = true)
             Pageable pageable,
-            @Parameter(description = "ID do usuário", required = true)
-            @RequestParam Long userId,
             @Parameter(description = "Nome da Classe")
             @RequestParam(required = false) String searchValue
     ) throws NotFoundException {
-        return ResponseEntity.ok(classService.getUserClasses(userId, searchValue, pageable));
+        return ResponseEntity.ok(classService.getUserClasses(searchValue, pageable));
     }
 }

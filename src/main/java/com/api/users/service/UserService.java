@@ -1,5 +1,6 @@
 package com.api.users.service;
 
+import com.api.auth.utils.SecurityUtil;
 import com.api.classes.model.ClassEntity;
 import com.api.classes.repository.StudentClassRepository;
 import com.api.classes.repository.TeacherClassRepository;
@@ -43,8 +44,8 @@ public class UserService {
     private final TeacherClassService teacherClassService;
 
     // Retrieve a user by their ID
-    public User getUser(Long userId) throws NotFoundException {
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+    public User getUser() {
+        return SecurityUtil.getCurrentUser();
     }
 
     // Retrieve all users from the repository
@@ -83,17 +84,16 @@ public class UserService {
     }
 
     // Retrieve user, update fields, and save changes to the repository
-    public User updateUser(Long userId, UserDTO userDTO) throws NotFoundException {
-        User userToUpdate = getUser(userId);
+    public User updateUser(UserDTO userDTO) {
+        User userToUpdate = getUser();
         userToUpdate.setEmail(userDTO.getEmail());
 
         return userRepository.save(userToUpdate);
     }
 
     // Retrieve user, validate old password, encrypt and update new password, and save to the repository
-    public void changePassword(Long userId, ChangePasswordRequest changePasswordRequest)
-            throws NotFoundException, BadRequestException {
-        User userToUpdate = getUser(userId);
+    public void changePassword(ChangePasswordRequest changePasswordRequest) throws BadRequestException {
+        User userToUpdate = getUser();
 
         if (!passwordEncryptionService.validatePassword(changePasswordRequest.getOldPassword(), userToUpdate.getPassword()))
             throw new BadRequestException(ErrorCode.INCORRECT_OLD_PASSWORD);
@@ -110,25 +110,25 @@ public class UserService {
     }
 
     // Retrieve user, encrypt and update new password, and save to the repository
-    public void resetPassword(Long userId, String newPassword) throws NotFoundException {
-        User userToReset = getUser(userId);
+    public void resetPassword(String newPassword){
+        User userToReset = getUser();
         String encryptedPassword = passwordEncryptionService.encryptPassword(newPassword);
         userToReset.setPassword(encryptedPassword);
         userRepository.save(userToReset);
     }
 
     // Retrieve user by email, and delete from the repository
-    public void deleteUser(Long userId) throws NotFoundException {
-        User userToDelete = getUser(userId);
+    public void deleteUser(){
+        User userToDelete = getUser();
         UserType userType = userToDelete.getUserType();
 
         switch (userType) {
             case STUDENT -> {
-                List<ClassEntity> studentClassList = studentClassRepository.findByStudentId(userId);
+                List<ClassEntity> studentClassList = studentClassRepository.findByStudentId(userToDelete.getId());
                 studentClassList.forEach(student -> studentClassService.removeStudentFromAllClasses(student.getId()));
             }
             case TEACHER -> {
-                List<ClassEntity> teacherClassList = teacherClassRepository.findByTeacherId(userId);
+                List<ClassEntity> teacherClassList = teacherClassRepository.findByTeacherId(userToDelete.getId());
                 teacherClassList.forEach(teacher -> teacherClassService.removeTeacherFromAllClasses(teacher.getId()));
             }
             default -> userRepository.delete(userToDelete);
