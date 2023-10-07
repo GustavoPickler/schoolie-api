@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -49,6 +50,7 @@ public class ClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("TEACHER")
     @PostMapping
     public ResponseEntity<ClassEntity> createClass(
             @RequestBody ClassDTO classDTO
@@ -72,6 +74,7 @@ public class ClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping
     public ResponseEntity<ClassEntity> getClass(
             @Parameter(description = "ID da classe a ser recuperada", required = true)
@@ -95,6 +98,7 @@ public class ClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured("TEACHER")
     @DeleteMapping()
     public ResponseEntity<ClassEntity> removeClass(
             @Parameter(description = "ID da classe a ser excluída", required = true)
@@ -117,6 +121,7 @@ public class ClassController {
                     @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
             }
     )
+    @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
     @GetMapping("/list")
     public ResponseEntity<Page<ClassInfoDTO>> listUserClasses(
             @Parameter(description = "Configurações de paginação", required = true)
