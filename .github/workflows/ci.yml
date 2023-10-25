@@ -9,9 +9,10 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "development" ]
+    branches: ["main", "development"]
   pull_request:
-    branches: [ "development" ]
+    branches: ["development"]
+    types: [closed]
   workflow_dispatch:
 
 permissions:
@@ -27,11 +28,25 @@ jobs:
       - name: Set up JDK 19
         uses: actions/setup-java@v3
         with:
-        java-version: '19'
-        distribution: 'corretto'
+          java-version: '19'
+          distribution: 'corretto'
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
 
-      - name: Run build with Gradle Wrapper
-        run: ./gradlew build
+      - name: Run Gradle Build
+        run: gradle build
+
+      - name: Run Unit Tests
+        run: gradle test
+
+      - name: Build and Push Docker Image
+        if: github.event.pull_request.merged == true
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+            image: gabrielpickler/schoolie
+            registry: docker.io
+            dockerfile: Dockerfile
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+
