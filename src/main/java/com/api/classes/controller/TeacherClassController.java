@@ -31,35 +31,35 @@ public class TeacherClassController {
 
     private final TeacherClassService teacherClassService;
 
-    /**
-     * Adiciona um estudante a uma classe por um professor.
-     * @param classId   O ID da classe.
-     * @param studentId O ID do estudante.
-     * @return Uma resposta vazia em caso de sucesso.
-     * @throws NotFoundException  Se a classe, o estudante ou o professor não forem encontrados.
-     * @throws UserTypeException Se o usuário não for um estudante.
-     */
-    @Operation(
-            summary = "Adicionar Estudante em Classe",
-            description = "Adiciona um estudante a uma classe por um professor.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Estudante adicionado com sucesso"),
-                    @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
-                    @ApiResponse(responseCode = "404", description = "Classe, estudante ou professor não encontrado"),
-                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-            }
-    )
-    @Secured("TEACHER")
-    @PutMapping()
-    public ResponseEntity<Void> addStudentIntoClass(
-            @Parameter(description = "ID da classe", required = true)
-            @RequestParam Long classId,
-            @Parameter(description = "ID do estudante", required = true)
-            @RequestParam Long studentId
-    ) throws NotFoundException, UserTypeException {
-        teacherClassService.addStudentInClass(classId, studentId);
-        return ResponseEntity.ok().build();
-    }
+//    /**
+//     * Adiciona um estudante a uma classe por um professor.
+//     * @param classId   O ID da classe.
+//     * @param studentId O ID do estudante.
+//     * @return Uma resposta vazia em caso de sucesso.
+//     * @throws NotFoundException  Se a classe, o estudante ou o professor não forem encontrados.
+//     * @throws UserTypeException Se o usuário não for um estudante.
+//     */
+//    @Operation(
+//            summary = "Adicionar Estudante em Classe",
+//            description = "Adiciona um estudante a uma classe por um professor.",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "Estudante adicionado com sucesso"),
+//                    @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+//                    @ApiResponse(responseCode = "404", description = "Classe, estudante ou professor não encontrado"),
+//                    @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+//            }
+//    )
+//    @Secured("TEACHER")
+//    @PutMapping()
+//    public ResponseEntity<Void> addStudentIntoClass(
+//            @Parameter(description = "ID da classe", required = true)
+//            @RequestParam Long classId,
+//            @Parameter(description = "ID do estudante", required = true)
+//            @RequestParam Long studentId
+//    ) throws NotFoundException, UserTypeException {
+//        teacherClassService.addStudentInClass(classId, studentId);
+//        return ResponseEntity.ok().build();
+//    }
 
     @Operation(
             summary = "Adicionar Professor em Classe",

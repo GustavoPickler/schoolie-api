@@ -75,12 +75,12 @@ public class ClassController {
             }
     )
     @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<ClassEntity> getClass(
             @Parameter(description = "ID da classe a ser recuperada", required = true)
-            @RequestParam Long classId
+            @PathVariable Long id
     ) throws NotFoundException {
-        return ResponseEntity.ok(classService.getClass(classId));
+        return ResponseEntity.ok(classService.getClass(id));
     }
 
     /**
@@ -122,13 +122,13 @@ public class ClassController {
             }
     )
     @Secured({"TEACHER", "STUDENT", "RESPONSIBLE"})
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<Page<ClassInfoDTO>> listUserClasses(
             @Parameter(description = "Configurações de paginação", required = true)
             Pageable pageable,
             @Parameter(description = "Nome da Classe")
             @RequestParam(required = false) String searchValue
-    ) throws NotFoundException {
+    ) {
         return ResponseEntity.ok(classService.getUserClasses(searchValue, pageable));
     }
 }

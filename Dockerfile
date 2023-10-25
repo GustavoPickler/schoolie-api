@@ -1,6 +1,6 @@
 FROM amazoncorretto:19.0.2-alpine
 WORKDIR /app
-COPY target/schoolie-image.jar schoolie-image.jar
+COPY build/libs/schoolie-image.jar schoolie-image.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","schoolie-image.jar"]
 
