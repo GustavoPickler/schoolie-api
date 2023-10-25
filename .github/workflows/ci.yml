@@ -12,7 +12,7 @@ on:
     branches: ["main", "development"]
   pull_request:
     branches: ["development"]
-    types: [closed]
+    types: [closed, open]
   workflow_dispatch:
 
 permissions:
