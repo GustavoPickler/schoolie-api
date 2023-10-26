@@ -41,7 +41,6 @@ jobs:
         run: gradle test
 
       - name: Build and Push Docker Image
-        if: github.event.pull_request.merged == true
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
             image: gabrielpickler/schoolie
