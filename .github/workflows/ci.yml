@@ -41,6 +41,7 @@ jobs:
         run: gradle test
 
       - name: Build and Push Docker Image
+        if: github.ref == 'refs/heads/development'
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
             image: gabrielpickler/schoolie
